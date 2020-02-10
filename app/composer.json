@@ -1,0 +1,8 @@
+{
+    "name": "dickson-michael/agency-analytics-crawler",
+    "description": "AgencyAnalytics Crawler",
+    "require": {
+       "php-http/curl-client": "^2.1",
+       "guzzlehttp/psr7": "^1.6"
+    }
+ }
