@@ -1,0 +1,74 @@
+<?php
+$avgFunc = function(array $arr) {
+    if (count($arr) == 0) return null;
+    return array_sum($arr) / count($arr);
+};
+?>
+
+<div class="page-header">
+    <h1>Crawl Results!</h1>
+    <?php echo $this->tag->form('index/crawl'); ?>
+        <?php echo $this->tag->textField('url'); ?>
+        <?php echo $this->tag->submitButton('submit'); ?>
+    </form>
+</div>
+
+<div class="page-content">
+    <div class="crawl-summary">
+        <h3>Summary</h3>
+        <table>
+            <thead><tr>
+                <td>Metric</td>
+                <td>Value</td>
+            </tr></thead>
+            <tbody>
+                <tr>
+                    <td>Pages Crawled</td>
+                    <td><?php echo count($summary->pagesCrawled); ?></td>
+                </tr>
+                <tr>
+                    <td>Unique Images</td>
+                    <td><?php echo count($summary->uniqueImages); ?></td>
+                </tr>
+                <tr>
+                    <td>Unique Internal Links</td>
+                    <td><?php echo count($summary->uniqueInternalLinks); ?></td>
+                </tr>
+                <tr>
+                    <td>Unique External Links</td>
+                    <td><?php echo count($summary->uniqueExternalLinks); ?></td>
+                </tr>
+                <tr>
+                    <td>Average Page Load</td>
+                    <td><?php echo $avgFunc($summary->pagesLoadTime); ?></td>
+                </tr>
+                <tr>
+                    <td>Average Word Count</td>
+                    <td><?php echo $avgFunc($summary->wordCount); ?></td>
+                </tr>
+                <tr>
+                    <td>Average Title Length</td>
+                    <td><?php echo $avgFunc($summary->titleLength); ?></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="crawl-pages">
+        <h3>Pages</h3>
+        <table>
+            <thead><tr>
+                <td>URL</td>
+                <td>Status</td>
+            </tr></thead>
+            <tbody>
+            <?php foreach ($pages as $url => $data): ?>
+                <tr>
+                    <td><?php echo $url; ?></td>
+                    <td><?php echo $data['code']; ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>

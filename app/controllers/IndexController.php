@@ -1,6 +1,16 @@
 <?php
 declare(strict_types=1);
 
+use Http\Client\Curl\Client;
+use Phalcon\Http\Message\RequestFactory;
+use Phalcon\Http\Message\ResponseFactory;
+use Phalcon\Http\Message\StreamFactory;
+
+use MyCrawler\CrawlerAgent;
+use MyCrawler\PageCrawler;
+
+use MyCrawler\SampleCrawler\CrawlerMetrics;
+
 class IndexController extends ControllerBase
 {
 
@@ -9,5 +19,30 @@ class IndexController extends ControllerBase
 
     }
 
+    // This is me being lazy. I don't want a new controller for one action.
+
+    public function crawlAction()
+    {
+        $url = $this->request->getPost('url');
+        if (!$url) {
+            throw new Exception("A URL is required to initiate site crawl.");
+        }
+
+        $client = new Client(new ResponseFactory(), new StreamFactory());
+        $requestFactory = new RequestFactory();
+
+        $crawlerAgent = new CrawlerAgent($client, $requestFactory);
+        $crawlerMetrics = new CrawlerMetrics($url);
+
+        $crawler = new PageCrawler($crawlerAgent);
+        $metrics = $crawler->scan($url, $crawlerMetrics);
+
+        $pages = $metrics->getPages();
+        $summary = $metrics->buildSummary();
+
+        $this->view->url = $url;
+        $this->view->pages = $pages;
+        $this->view->summary = $summary;
+    }
 }
 
