@@ -8,6 +8,16 @@ $loader = new \Phalcon\Loader();
 $loader->registerDirs(
     [
         $config->application->controllersDir,
-        $config->application->modelsDir
     ]
-)->register();
+);
+$loader->registerNamespaces(
+    [
+        'MyCrawler' => $config->application->libraryDir . '/MyCrawler',
+    ]
+);
+$loader->registerFiles(
+    [
+        APP_PATH . '/vendor/autoload.php', // composer
+    ]
+);
+$loader->register();
