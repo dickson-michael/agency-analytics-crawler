@@ -3,6 +3,7 @@
 namespace MyCrawler;
 
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Client\NetworkExceptionInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 
 /**
@@ -35,6 +36,9 @@ class CrawlerAgent
      * Fetches a given web address using the HTTP GET method.
      *
      * @param string $url The URL to GET the HTML contents from.
+     *
+     * @throws NetworkExceptionInterface If there is an error communicating with the server.
+     *
      * @return mixed[] Metadata (and HTML contents) from the URL.
      */
     public function fetch(string $url) : array
@@ -44,12 +48,10 @@ class CrawlerAgent
         $timeStart = microtime(true); // keep immediately preceeding sendRequest()
         $response = $this->client->sendRequest($request);
         $body = $response->getBody();
-        // TODO: Check for valid response.
-
         $html = $body->getContents();
         $timeTaken = microtime(true) - $timeStart; // keep immediately following getContents()
 
-        // TODO: Check for valid HTML.
+        // TODO: Check for valid HTML or recode this as 'data' if we want to let the scraper detect content type.
 
         return [
             'url' => $url,

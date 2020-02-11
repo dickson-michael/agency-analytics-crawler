@@ -2,6 +2,8 @@
 
 namespace MyCrawler;
 
+use Psr\Http\Client\NetworkExceptionInterface;
+
 /**
  * The page crawler logic. This crawler has an internal limiter to prevent running indefinitely. It will only
  * fetch a few pages at a time (pages randomly chosen).
@@ -32,6 +34,8 @@ class PageCrawler
      *        TODO: I think this should be a factory which generates both scraper and metrics. But it's harder to
      *              remain aware of the coupling between the two if done this way.
      *
+     * @throws NetworkExceptionInterface If we cannot resolve the URL given for crawling.
+     *
      * @return CrawlerMetrics The resulting metrics of the site crawl.
      */
     public function scan(string $url, CrawlerMetrics $metrics) : CrawlerMetrics
@@ -43,13 +47,24 @@ class PageCrawler
             $rand = array_rand($unvisited);
             $url = $unvisited[$rand];
 
-            $links = $this->crawlPage($url, $metrics);
+            try {
+                $links = $this->crawlPage($url, $metrics);
 
-            // Resolve crawled links to a form can query (e.g. 'xyz' -> 'site.tld/a/b/xyz' when at 'site.tld/a/b')
-            $urlResolver = $this->makeResolver($url);
-            $links = array_map(function ($url) use ($urlResolver) {
-                return $urlResolver($url);
-            }, $links);
+                // Resolve crawled links to a form can query (e.g. 'xyz' -> 'site.tld/a/b/xyz' when at 'site.tld/a/b')
+                $urlResolver = $this->makeResolver($url);
+                $links = array_map(function ($url) use ($urlResolver) {
+                    return $urlResolver($url);
+                }, $links);
+            }
+            catch (NetworkExceptionInterface $ex) {
+                // If we haven't visited anywhere, we were passed a bad URL and should trickle upwards.
+                if (count($visited) == 0) {
+                    throw $ex;
+                }
+
+                // Otherwise, we followed a bad link, and log it as such.
+                $metrics->addPage($url, [], ['code' => 0]);
+            }
 
             $visited[] = $url;
             $unvisited = array_merge($unvisited, $links);
