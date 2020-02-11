@@ -43,3 +43,5 @@ It's probably reasonable to use a factory to generate a new *PageScraper* for ea
 Arguably, the biggest problem in the design is that *CrawlerMetrics* acts as a factory for *PageScraper*. This is implemented to ensure that *CrawlerMetrics* is receiving data it can understand. In a design where everything is replacable using DI, this is very out of place. A potential change might be to have a single DI container that constructs *CrawlerMetrics* and *PageScraper* and is tasked solely with ensuring their interoperability.
 
 Use of XPath for scraping is very helpful. It's hardly surprising I found this is also a recommended approach after settling on it. That said, I do have a bias towards XPath stemming from past work, and using another approach might have been more educational.
+
+Finally, generating summary data from *CrawlerMetrics* data could be split off into another class. *CrawlerMetrics* would then be acting simply as a Data Mapper, saving and loading records from some persistent or temporary store (and likely be renamed accordingly). If this code were to actually see usage with a persistent datastore, this is a change that I'd want to make.
