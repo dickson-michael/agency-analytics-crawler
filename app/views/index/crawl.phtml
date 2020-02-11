@@ -13,7 +13,16 @@ $avgFunc = function(array $arr) {
     </form>
 </div>
 
+<?php if (isset($errors)): ?>
+<div class="page-errors"><ul>
+    <?php foreach ($errors as $error): ?>
+    <li><?php echo $error; ?></li>
+    <?php endforeach; ?>
+</ul></div>
+<?php endif; ?>
+
 <div class="page-content">
+    <?php if (isset($summary)): ?>
     <div class="crawl-summary">
         <h3>Summary</h3>
         <table>
@@ -53,7 +62,9 @@ $avgFunc = function(array $arr) {
             </tbody>
         </table>
     </div>
+    <?php endif; ?>
 
+    <?php if (isset($pages)): ?>
     <div class="crawl-pages">
         <h3>Pages</h3>
         <table>
@@ -71,4 +82,5 @@ $avgFunc = function(array $arr) {
             </tbody>
         </table>
     </div>
+    <?php endif; ?>
 </div>

@@ -28,21 +28,28 @@ class IndexController extends ControllerBase
             throw new Exception("A URL is required to initiate site crawl.");
         }
 
-        $client = new Client(new ResponseFactory(), new StreamFactory());
-        $requestFactory = new RequestFactory();
+        $errors = [];
+        try {
+            $client = new Client(new ResponseFactory(), new StreamFactory());
+            $requestFactory = new RequestFactory();
 
-        $crawlerAgent = new CrawlerAgent($client, $requestFactory);
-        $crawlerMetrics = new CrawlerMetrics($url);
+            $crawlerAgent = new CrawlerAgent($client, $requestFactory);
+            $crawlerMetrics = new CrawlerMetrics($url);
 
-        $crawler = new PageCrawler($crawlerAgent);
-        $metrics = $crawler->scan($url, $crawlerMetrics);
+            $crawler = new PageCrawler($crawlerAgent);
+            $metrics = $crawler->scan($url, $crawlerMetrics);
 
-        $pages = $metrics->getPages();
-        $summary = $metrics->buildSummary();
+            $pages = $metrics->getPages();
+            $summary = $metrics->buildSummary();
 
-        $this->view->url = $url;
-        $this->view->pages = $pages;
-        $this->view->summary = $summary;
+            $this->view->url = $url;
+            $this->view->pages = $pages;
+            $this->view->summary = $summary;
+        }
+        catch (\Psr\Http\Client\NetworkExceptionInterface $ex) {
+            $errors[] = "Sorry, that URL is not valid.";
+            $this->view->errors = $errors;
+        }
     }
 }
 
