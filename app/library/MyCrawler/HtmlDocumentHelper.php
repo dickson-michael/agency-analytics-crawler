@@ -1,11 +1,4 @@
 <?php
-/**
- * @category
- * @package
- * @author
- * @license
- * @link
- */
 
 namespace MyCrawler;
 
@@ -70,7 +63,7 @@ class HtmlDocumentHelper
     public function extractAttribute(string $attribute, array $nodes) : array
     {
         /** @var string[] */
-        $data = array_map(function ($elm) use ($attribute) {
+        $data = array_map(function($elm) use ($attribute) {
             $src = $elm->attributes->getNamedItem($attribute);
             return $src ? $src->nodeValue : null;
         }, $nodes);

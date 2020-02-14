@@ -26,16 +26,12 @@ class BasicPageScraper implements PageScraper
 
         // Get the document <title>, properly at <html><head><title>
         $nodes = $helper->nodes('//title/text()');
-        $title = array_map(function ($elm) {
-            return trim($elm->nodeValue);
-        }, $nodes);
+        $title = array_map(function ($elm) { return trim($elm->nodeValue); }, $nodes);
         $title = array_shift($title);
 
         // Get the document <body>, properly at <html><body>
         $nodes = $helper->nodes('//body//*[not(self::script)][not(self::style)]/text()');
-        $words = array_map(function ($elm) {
-            return trim($elm->nodeValue);
-        }, $nodes);
+        $words = array_map(function ($elm) { return trim($elm->nodeValue); }, $nodes);
         $words = implode(' ', $words);
 
         return [

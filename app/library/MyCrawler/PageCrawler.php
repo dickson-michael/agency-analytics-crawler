@@ -55,7 +55,8 @@ class PageCrawler
                 $links = array_map(function ($url) use ($urlResolver) {
                     return $urlResolver($url);
                 }, $links);
-            } catch (NetworkExceptionInterface $ex) {
+            }
+            catch (NetworkExceptionInterface $ex) {
                 // If we haven't visited anywhere, we were passed a bad URL and should trickle upwards.
                 if (count($visited) == 0) {
                     throw $ex;
@@ -107,7 +108,7 @@ class PageCrawler
      */
     private function makeResolver($base) : callable
     {
-        return function ($path) use ($base) : string {
+        return function($path) use ($base) : string {
             // note: tested this with Phalcon\Uri instead, but it doesn't do resolution
             $uri = \GuzzleHttp\Psr7\UriResolver::resolve(
                 \GuzzleHttp\Psr7\uri_for($base),
