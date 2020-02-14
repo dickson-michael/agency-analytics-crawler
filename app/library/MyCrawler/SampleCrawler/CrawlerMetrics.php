@@ -86,7 +86,7 @@ class CrawlerMetrics implements \MyCrawler\CrawlerMetrics
     public function buildSummary() : \stdClass
     {
         return (object) [
-            'pagesCrawled' => array_keys(array_filter($this->pages, function($data) {
+            'pagesCrawled' => array_keys(array_filter($this->pages, function ($data) {
                 return $data['code'] == 200;
             })),
 
