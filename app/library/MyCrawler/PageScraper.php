@@ -24,4 +24,3 @@ interface PageScraper
      */
     public function followOn(array $data) : array;
 }
-
